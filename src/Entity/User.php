@@ -44,8 +44,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->customer = new ArrayCollection();
     }
 
-
-
     public function getId(): ?int
     {
         return $this->id;
@@ -80,7 +78,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->name;
+        return (string) $this->userName;
     }
 
         /**

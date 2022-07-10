@@ -21,12 +21,12 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         // Creation d'un admin
-        $user = new User();
-            $user->setName('Admin');
-            $user->setUsername('admin');
-            $user->setRoles(["ROLE_ADMIN"]);
-            $user->setPassword($this->userPasswordHasher->hashPassword($user, "password"));
-            $manager->persist($user);
+        $userAdmin = new User();
+            $userAdmin->setName("Admin");
+            $userAdmin->setUsername("admin");
+            $userAdmin->setRoles(["ROLE_ADMIN"]);
+            $userAdmin->setPassword($this->userPasswordHasher->hashPassword($userAdmin, "password"));
+            $manager->persist($userAdmin);
         //Creation des fixtures d'utilisateurs
         $listUser = [];
         for ($i = 0; $i < 20; $i++) {
