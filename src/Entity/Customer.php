@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\CustomerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
 class Customer
@@ -17,14 +18,19 @@ class Customer
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Groups(["getCustomers", "getUsers"])]
+    #[Assert\NotBlank(message: "Le nom du client est obligatoire")]
+    #[Assert\Length(min: 1, max: 255, minMessage: "Le nom du client doit faire au minimum {{ limit }} caractères", maxMessage: "Le nom du client ne peut pas faire plus de {{ limit }} caractères")]
     private $name;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Groups(["getCustomers", "getUsers"])]
+    #[Assert\NotBlank(message: "Le détail du client est obligatoire")]
+    #[Assert\Length(min: 1, max: 255, minMessage: "Le détail du client doit faire au minimum {{ limit }} caractères", maxMessage: "Le détail du client ne peut pas faire plus de {{ limit }} caractères")]
     private $detail;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'customer')]
     #[Groups(["getCustomers"])]
+    #[Assert\NotBlank(message: "L'ID de l'utilisateur est obligatoire")]
     private $user;
 
     public function getId(): ?int

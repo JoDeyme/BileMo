@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
@@ -17,10 +18,14 @@ class Product
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Groups(['getProducts'])]
+    #[Assert\NotBlank(message: "Le nom du produit est obligatoire")]
+    #[Assert\Length(min: 1, max: 255, minMessage: "Le nom du produit doit faire au minimum {{ limit }} caractères", maxMessage: "Le nom du produit ne peut pas faire plus de {{ limit }} caractères")]
     private $name;
 
     #[ORM\Column(type: 'text')]
     #[Groups(['getProducts'])]
+    #[Assert\NotBlank(message: "Le détail du produit est obligatoire")]
+    #[Assert\Length(min: 1, max: 255, minMessage: "Le détail du produit doit faire au minimum {{ limit }} caractères", maxMessage: "Le détail du produit ne peut pas faire plus de {{ limit }} caractères")]
     private $detail;
 
     public function getId(): ?int

@@ -7,18 +7,34 @@ use App\Entity\Product;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+    private $userPasswordHasher;
+
+    public function __construct(UserPasswordHasherInterface $userPasswordHasher)
+    {
+        $this->userPasswordHasher = $userPasswordHasher;
+    }
+
     public function load(ObjectManager $manager): void
     {
+        // Creation d'un admin
+        $user = new User();
+            $user->setName('Admin');
+            $user->setUsername('admin');
+            $user->setRoles(["ROLE_ADMIN"]);
+            $user->setPassword($this->userPasswordHasher->hashPassword($user, "password"));
+            $manager->persist($user);
         //Creation des fixtures d'utilisateurs
         $listUser = [];
         for ($i = 0; $i < 20; $i++) {
             $user = new User();
             $user->setName('User' . $i);
             $user->setUsername('utilisateur' . $i);
-            $user->setPassword('utilisateur' . $i);
+            $user->setRoles(["ROLE_USER"]);
+            $user->setPassword($this->userPasswordHasher->hashPassword($user, "password"));
             $manager->persist($user);
             // On sauvegarde l'utilisateur créé dans un tableau
             $listUser[] = $user;
