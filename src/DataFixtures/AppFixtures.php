@@ -51,7 +51,7 @@ class AppFixtures extends Fixture
         }
 
         //Creation des fixtures de produits
-        for ($i = 0; $i < 20; $i++) {
+        for ($i = 0; $i < 50; $i++) {
             $product = new Product();
             $product->setName('Product '.$i);
             $product->setDetail('Detail '.$i);
