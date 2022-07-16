@@ -45,6 +45,7 @@ class ProductController extends AbstractController
     }
 
     #[Route('/api/products/{id}', name: 'product_delete', methods: ['DELETE'])]
+    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants supprimer un produit')]
     public function deleteProduct(Product $product, EntityManagerInterface $entityManager, TagAwareCacheInterface $cache): JsonResponse
     {
         $cache->invalidateTags(["productsCache"]);
@@ -54,6 +55,7 @@ class ProductController extends AbstractController
     }
 
     #[Route('/api/products', name: 'product_create', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour ajouter un produit')]
     public function createProduct(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator, ValidatorInterface $validator): JsonResponse
     {
         $product = $serializer->deserialize($request->getContent(), Product::class, 'json');

@@ -23,7 +23,6 @@ class Product
     private $name;
 
     #[ORM\Column(type: 'text')]
-    #[Groups(['getProducts'])]
     #[Assert\NotBlank(message: "Le détail du produit est obligatoire")]
     #[Assert\Length(min: 1, max: 255, minMessage: "Le détail du produit doit faire au minimum {{ limit }} caractères", maxMessage: "Le détail du produit ne peut pas faire plus de {{ limit }} caractères")]
     private $detail;

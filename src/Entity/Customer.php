@@ -13,17 +13,17 @@ class Customer
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["getCustomers", "getUsers"])]
+    #[Groups(["getCustomers", "getUsers","getUsersDetails"])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["getCustomers", "getUsers"])]
+    #[Groups(["getCustomers", "getUsers","getUsersDetails"])]
     #[Assert\NotBlank(message: "Le nom du client est obligatoire")]
     #[Assert\Length(min: 1, max: 255, minMessage: "Le nom du client doit faire au minimum {{ limit }} caractères", maxMessage: "Le nom du client ne peut pas faire plus de {{ limit }} caractères")]
     private $name;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["getCustomers", "getUsers"])]
+    #[Groups(["getCustomers", "getUsers","getUsersDetails"])]
     #[Assert\NotBlank(message: "Le détail du client est obligatoire")]
     #[Assert\Length(min: 1, max: 255, minMessage: "Le détail du client doit faire au minimum {{ limit }} caractères", maxMessage: "Le détail du client ne peut pas faire plus de {{ limit }} caractères")]
     private $detail;

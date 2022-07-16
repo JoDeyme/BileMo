@@ -18,25 +18,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["getCustomers", "getUsers"])]
+    #[Groups(["getCustomers", "getUsers", "getUsersDetails"])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["getCustomers", "getUsers"])]
+    #[Groups(["getCustomers", "getUsers", "getUsersDetails"])]
     private $name;
 
     #[ORM\Column(type: 'json')]
+    #[Groups(["getUsersDetails"])]
     private $roles = [];
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["getCustomers", "getUsers"])]
+    #[Groups(["getCustomers", "getUsersDetails"])]
     private $userName;
 
     #[ORM\Column(type: 'string', length: 255)]
     private $password;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Customer::class)]
-    #[Groups(["getUsers"])]
+    #[Groups(["getUsersDetails", "getUsers"])]
     private $customer;
 
     public function __construct()
