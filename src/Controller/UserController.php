@@ -4,11 +4,12 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use JMS\Serializer\SerializationContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
+use JMS\Serializer\SerializerInterface;
 
 class UserController extends AbstractController
 {
@@ -16,8 +17,8 @@ class UserController extends AbstractController
     public function getAllUsers(UserRepository $userRepository, SerializerInterface $serializerInteface) : JsonResponse
     {
        $userList = $userRepository->findAll();
-
-        $jsonUserList = $serializerInteface->serialize($userList, 'json', ['groups' => 'getUsers']);
+        $context = SerializationContext::create()->setGroups(["getUsers"]);
+        $jsonUserList = $serializerInteface->serialize($userList, 'json', $context);
         
         return new JsonResponse($jsonUserList, Response::HTTP_OK, [], true);
     }
@@ -26,7 +27,8 @@ class UserController extends AbstractController
     public function getUserById($id, UserRepository $userRepository, SerializerInterface $serializerInteface) : JsonResponse
     {
         $user = $userRepository->findBy(['id' => $id]);
-        $jsonUser = $serializerInteface->serialize($user, 'json', ['groups' => 'getUsersDetails']);
+        $context = SerializationContext::create()->setGroups(["getUsersDetails"]);
+        $jsonUser = $serializerInteface->serialize($user, 'json', $context);
 
         return new JsonResponse($jsonUser, Response::HTTP_OK, [], true);
     }
