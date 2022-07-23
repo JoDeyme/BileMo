@@ -9,15 +9,19 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Hateoas\Configuration\Annotation as Hateoas;
 
 
+
+
 /**
  * @Hateoas\Relation(
- *      name ="self",
- *      href = @Hateoas\Route("detailProduct", parameters = { "id" = "expr(object.getId())" })
- *                  )
+ *      "self",
+ *      href = @Hateoas\Route(
+ *          "detailProduct",
+ *          parameters = { "id" = "expr(object.getId())" }
+ *      ),
+ *      exclusion = @Hateoas\Exclusion(groups="getProducts")
+ * )
  *
  */
-
-
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
 {

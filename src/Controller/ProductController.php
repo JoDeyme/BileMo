@@ -22,11 +22,11 @@ class ProductController extends AbstractController
 {
     #[Route('/api/products', name: 'product', methods: ['GET'])]
     public function getAllProducts(ProductRepository $productRepository, SerializerInterface $serializerInterface, Request $request, TagAwareCacheInterface $cache): JsonResponse
-    {   
-        $page=$request->get('page', 1);
-        $limit=$request->get('limit', 5);
+    {
+        $page = $request->get('page', 1);
+        $limit = $request->get('limit', 5);
 
-        $idCache="getAllProducts-" . $page . "-" . $limit;
+        $idCache = "getAllProducts-" . $page . "-" . $limit;
 
         $jsonProductList = $cache->get($idCache, function (ItemInterface $item) use ($productRepository, $page, $limit, $serializerInterface) {
             $item->tag("productsCache");
@@ -34,14 +34,14 @@ class ProductController extends AbstractController
             $context = SerializationContext::create()->setGroups(["getProducts"]);
             return $serializerInterface->serialize($productList, 'json', $context);
         });
-        
+
         return new JsonResponse($jsonProductList, Response::HTTP_OK, [], true);
     }
 
-    #[Route('/api/products/{id}', name: 'product_detail', methods: ['GET'])]
+    #[Route('/api/products/{id}', name: 'detailProduct', methods: ['GET'])]
     public function getProduct(Product $product, SerializerInterface $serializerInterface): JsonResponse
- 
-    {   
+
+    {
         $context = SerializationContext::create()->setGroups(["getProductsDetails"]);
         $jsonProduct = $serializerInterface->serialize($product, 'json', $context);
 
@@ -63,7 +63,7 @@ class ProductController extends AbstractController
     public function createProduct(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator, ValidatorInterface $validator): JsonResponse
     {
         $product = $serializer->deserialize($request->getContent(), Product::class, 'json');
-        
+
         $error = $validator->validate($product);
         if (count($error) > 0) {
             return new JsonResponse($serializer->serialize($error, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
@@ -79,6 +79,4 @@ class ProductController extends AbstractController
 
         return new JsonResponse($jsonProduct, Response::HTTP_CREATED, ["Location" => $location], true);
     }
-
-
 }

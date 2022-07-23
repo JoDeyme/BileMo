@@ -30,11 +30,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["getCustomers", "getUsers", "getUsersDetails"])]
+    #[Groups(["getUsers", "getUsersDetails", "getCustomersDetails"])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["getCustomers", "getUsers", "getUsersDetails"])]
+    #[Groups(["getCustomers", "getUsers", "getUsersDetails", "getCustomersDetails"])]
     private $name;
 
     #[ORM\Column(type: 'json')]
@@ -42,7 +42,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $roles = [];
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["getCustomers", "getUsersDetails"])]
+    #[Groups(["getUsersDetails", "getCustomersDetails"])]
     private $userName;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -94,7 +94,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return (string) $this->userName;
     }
 
-        /**
+    /**
      * Méthode getUserName() qui permet de retourner le champs qui est utilisé pour l'authentification.
      * 
      * @return string|null
@@ -139,7 +139,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-     /**
+    /**
      * @return Collection<int, Customer>
      */
     public function getCustomer(): Collection
@@ -170,7 +170,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
 
-   
+
 
 
 
