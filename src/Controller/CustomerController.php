@@ -23,7 +23,12 @@ class CustomerController extends AbstractController
     #[Route('/api/customers', name: 'customer', methods: ['GET'])]
     public function getAllCustomers(CustomerRepository $customerRepository, SerializerInterface $serializerInteface) : JsonResponse
     {
-        $customerList = $customerRepository->findAll();
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $customerList = $customerRepository->findAll();
+        } else {
+            $customerList = $customerRepository->findBy(['user' => $this->getUser()]);
+        }
+        
 
         $context = SerializationContext::create()->setGroups(["getCustomers"]);
         $jsonCustomerList = $serializerInteface->serialize($customerList, 'json', $context);
@@ -32,10 +37,16 @@ class CustomerController extends AbstractController
     }
 
     #[Route('/api/customers/{id}', name: 'customer_id', methods: ['GET'])]
-    public function getCustomer(Customer $customer, SerializerInterface $serializerInteface) : JsonResponse
+    public function getCustomer(Customer $customer, SerializerInterface $serializerInteface, CustomerRepository $customerRepository) : JsonResponse
     {
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $customerList = $customerRepository->findBy(['id' => $customer->getId()]);
+        } else {
+            $customerList = $customerRepository->findBy(['id' => $customer->getId(), 'user' => $this->getUser()]);
+        }
+
         $context = SerializationContext::create()->setGroups(["getCustomers"]);
-        $jsonCustomer = $serializerInteface->serialize($customer, 'json', $context);
+        $jsonCustomer = $serializerInteface->serialize($customerList, 'json', $context);
 
         return new JsonResponse($jsonCustomer, Response::HTTP_OK, [], true);
     }
