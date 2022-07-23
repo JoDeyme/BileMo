@@ -23,7 +23,7 @@ class CustomerController extends AbstractController
     #[Route('/api/customers', name: 'customer', methods: ['GET'])]
     public function getAllCustomers(CustomerRepository $customerRepository, SerializerInterface $serializerInteface) : JsonResponse
     {
-       $customerList = $customerRepository->findAll();
+        $customerList = $customerRepository->findAll();
 
         $context = SerializationContext::create()->setGroups(["getCustomers"]);
         $jsonCustomerList = $serializerInteface->serialize($customerList, 'json', $context);

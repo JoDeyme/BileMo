@@ -23,10 +23,9 @@ class UserController extends AbstractController
         return new JsonResponse($jsonUserList, Response::HTTP_OK, [], true);
     }
 
-    #[Route('/api/users/{id}', name: 'user_id', methods: ['GET'])]
-    public function getUserById($id, UserRepository $userRepository, SerializerInterface $serializerInteface) : JsonResponse
+    #[Route('/api/users/{id}', name: 'detailUser', methods: ['GET'])]
+    public function getUserById(User $user, SerializerInterface $serializerInteface) : JsonResponse
     {
-        $user = $userRepository->findBy(['id' => $id]);
         $context = SerializationContext::create()->setGroups(["getUsersDetails"]);
         $jsonUser = $serializerInteface->serialize($user, 'json', $context);
 

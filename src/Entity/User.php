@@ -19,12 +19,10 @@ use Hateoas\Configuration\Annotation as Hateoas;
  *          "detailUser",
  *          parameters = { "id" = "expr(object.getId())" }
  *      ),
- *     exclusion = @Hateoas\Exclusion(groups = "getUsers")
+ *      exclusion = @Hateoas\Exclusion(groups="getUsers")
  * )
  *
  */
-
-
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {

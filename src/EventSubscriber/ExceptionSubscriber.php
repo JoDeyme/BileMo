@@ -26,7 +26,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
                 $data=
                 [
                         'status'=> 500, // le status n'existe pas donc on retourne une erreur 500
-                        'message'=> 'Internal Server Error'
+                        'message'=> $exception->getMessage()
                 ];
                 $event->setResponse(new JsonResponse($data));
             };
