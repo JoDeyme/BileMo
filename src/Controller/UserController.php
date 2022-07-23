@@ -16,7 +16,13 @@ class UserController extends AbstractController
     #[Route('/api/users', name: 'User', methods: ['GET'])]
     public function getAllUsers(UserRepository $userRepository, SerializerInterface $serializerInteface) : JsonResponse
     {
-       $userList = $userRepository->findAll();
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $userList = $userRepository->findAll();
+        } else {
+            $userList = $userRepository->findBy(['id' => $this->getUser()]);
+        }
+
+
         $context = SerializationContext::create()->setGroups(["getUsers"]);
         $jsonUserList = $serializerInteface->serialize($userList, 'json', $context);
         
@@ -24,10 +30,17 @@ class UserController extends AbstractController
     }
 
     #[Route('/api/users/{id}', name: 'detailUser', methods: ['GET'])]
-    public function getUserById(User $user, SerializerInterface $serializerInteface) : JsonResponse
+    public function getUserById(User $user, SerializerInterface $serializerInteface, UserRepository $userRepository) : JsonResponse
     {
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $userList = $userRepository->findBy(['id' => $user->getId()]);
+        } else {
+            $userList = $userRepository->findBy(['id' => $user->getId(), 'id' => $this->getUser()]);
+        }
+
+
         $context = SerializationContext::create()->setGroups(["getUsersDetails"]);
-        $jsonUser = $serializerInteface->serialize($user, 'json', $context);
+        $jsonUser = $serializerInteface->serialize($userList, 'json', $context);
 
         return new JsonResponse($jsonUser, Response::HTTP_OK, [], true);
     }
