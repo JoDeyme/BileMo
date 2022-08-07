@@ -82,7 +82,7 @@ class CustomerController extends AbstractController
 
 
 
-    #[Route('/api/customers/{id}', name: 'detailCustomer', methods: ['GET'])]
+    #[Route('/api/customers/{id}', name: 'customer_id', methods: ['GET'])]
     public function getCustomer(Customer $customer, SerializerInterface $serializerInteface, CustomerRepository $customerRepository): JsonResponse
     {
 
@@ -197,12 +197,30 @@ class CustomerController extends AbstractController
      * @OA\Response(
      *    response=200,
      *   description="Modifie un client",
-     *  @OA\JsonContent(
+     * @OA\JsonContent(
      *        type="array",
      *       @OA\Items(ref=@Model(type=Customer::class, groups={"getCustomersDetails"}))
      *    )
      * )
-     * * @OA\Tag(name="Clients")
+     * @OA\Parameter(
+     *     name="name",
+     *     in="query",
+     *     description="nouveau nom du client",
+     *     @OA\Schema(type="string")
+     * )
+     * @OA\Parameter(
+     *     name="detail",
+     *     in="query",
+     *     description="nouveau detail du client",
+     *     @OA\Schema(type="string")
+     * )
+     *      * @OA\Parameter(
+     *     name="idUser",
+     *     in="query",
+     *     description="nouveau detail du client",
+     *     @OA\Schema(type="int")
+     * )
+     * * @OA\Tag(name="Admin")
      * 
      * @param CustomerRepository $customerRepository
      * @param SerializerInterface $serializer
@@ -234,6 +252,7 @@ class CustomerController extends AbstractController
 
         $entityManager->persist($currentCustomer);
         $entityManager->flush();
+        return new JsonResponse(['message' => 'Client modifié'], Response::HTTP_OK);
 
         // On vide le cache.
         $cache->invalidateTags(["customersCache"]);

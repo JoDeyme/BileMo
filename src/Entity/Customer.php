@@ -12,7 +12,7 @@ use Hateoas\Configuration\Annotation as Hateoas;
  * @Hateoas\Relation(
  *      "self",
  *      href = @Hateoas\Route(
- *          "detailCustomer", parameters = { "id" = "expr(object.getId())" }
+ *          "customer_id", parameters = { "id" = "expr(object.getId())" }
  *      ),
  *      exclusion = @Hateoas\Exclusion(groups="getCustomers") 
  * )
