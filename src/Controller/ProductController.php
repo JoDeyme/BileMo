@@ -95,7 +95,7 @@ class ProductController extends AbstractController
      */
 
 
-    #[Route('/api/products/{id}', name: 'getProductsDetails', methods: ['GET'])]
+    #[Route('/api/products/{id}', name: 'detailProduct', methods: ['GET'])]
     public function getProduct(Product $product, SerializerInterface $serializerInterface): JsonResponse
 
     {
