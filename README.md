@@ -45,7 +45,7 @@ Lancez l'environnement d'exécution Apache / Php en utilisant:
 ```
 php bin/console server:run
 ```
-## Documentation API - Swagger
+## Documentation API Nelmio
 ```
 https://127.0.0.1:8000/api/doc
 ```
