@@ -140,6 +140,35 @@ class CustomerController extends AbstractController
      *       @OA\Items(ref=@Model(type=Customer::class, groups={"getCustomersDetails"}))
      *    )
      * )
+     * 
+     * *@OA\RequestBody(
+     *       required=true,
+     *       @OA\MediaType(
+     *           mediaType="application/json",
+     *           @OA\Schema(
+     *               type="object",
+     *               @OA\Property(
+     *                   property="name",
+     *                   description="nom du client",
+     *                   type="string",
+     *                   example="utilisateur N"
+     *               ),
+     *               @OA\Property(
+     *                   property="detail",
+     *                   description="detail du client",
+     *                   type="string",
+     *                   example="detail N"
+     *               ),
+     *              @OA\Property(
+     *                   property="idUser",
+     *                   description="id de l'utilisateur",
+     *                   type="integer",
+     *                   example="000"
+     *               ),
+     *           )
+     *       )
+     *   ),
+     * 
      * * @OA\Tag(name="Clients")
      * 
      * @param CustomerRepository $customerRepository
@@ -202,24 +231,36 @@ class CustomerController extends AbstractController
      *       @OA\Items(ref=@Model(type=Customer::class, groups={"getCustomersDetails"}))
      *    )
      * )
-     * @OA\Parameter(
-     *     name="name",
-     *     in="query",
-     *     description="nouveau nom du client",
-     *     @OA\Schema(type="string")
-     * )
-     * @OA\Parameter(
-     *     name="detail",
-     *     in="query",
-     *     description="nouveau detail du client",
-     *     @OA\Schema(type="string")
-     * )
-     *      * @OA\Parameter(
-     *     name="idUser",
-     *     in="query",
-     *     description="nouveau detail du client",
-     *     @OA\Schema(type="int")
-     * )
+     * 
+     *@OA\RequestBody(
+     *       required=true,
+     *       @OA\MediaType(
+     *           mediaType="application/json",
+     *           @OA\Schema(
+     *               type="object",
+     *               @OA\Property(
+     *                   property="name",
+     *                   description="nom du client",
+     *                   type="string",
+     *                   example="utilisateur N"
+     *               ),
+     *               @OA\Property(
+     *                   property="detail",
+     *                   description="detail du client",
+     *                   type="string",
+     *                   example="detail N"
+     *               ),
+     *              @OA\Property(
+     *                   property="idUser",
+     *                   description="id de l'utilisateur",
+     *                   type="integer",
+     *                   example="000"
+     *               ),
+     *           )
+     *       )
+     *   ),
+     * 
+     *
      * * @OA\Tag(name="Admin")
      * 
      * @param CustomerRepository $customerRepository
