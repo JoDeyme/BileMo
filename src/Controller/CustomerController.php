@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Customer;
+use App\Entity\User;
 use App\Repository\CustomerRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,6 +21,7 @@ use Symfony\Contracts\Cache\TagAwareCacheInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class CustomerController extends AbstractController
 {
@@ -34,6 +36,19 @@ class CustomerController extends AbstractController
      *       @OA\Items(ref=@Model(type=Customer::class, groups={"getCustomers"}))
      *    )
      * )
+     *  * @OA\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="La page que l'on veut récupérer",
+     *     @OA\Schema(type="int")
+     * )
+     *
+     * @OA\Parameter(
+     *     name="limit",
+     *     in="query",
+     *     description="Le nombre de produit que l'on veut récupérer",
+     *     @OA\Schema(type="int")
+     * )
      * * @OA\Tag(name="Clients")
      * 
      * 
@@ -45,20 +60,39 @@ class CustomerController extends AbstractController
 
 
     #[Route('/api/customers', name: 'customers', methods: ['GET'])]
-    public function getAllCustomers(CustomerRepository $customerRepository, SerializerInterface $serializerInteface): JsonResponse
+    public function getAllCustomers(CustomerRepository $customerRepository, SerializerInterface $serializerInteface, TagAwareCacheInterface $cache, Request $request): JsonResponse
     {
+
+        $page = $request->get('page', 1);
+        $limit = $request->get('limit', 5);
+
+        $idCache = "getCustomers-" . $page . "-" . $limit;
+
         if ($this->isGranted('ROLE_ADMIN')) {
-            $customerList = $customerRepository->findAll();
+            $jsonCustomerList = $cache->get(
+                $idCache,
+                function (ItemInterface $item) use ($customerRepository, $page, $limit, $serializerInteface) {
+                    $item->tag("customersCache");
+                    $customerList = $customerRepository->findAllWithPagination($page, $limit);
+                    $context = SerializationContext::create()->setGroups(["getCustomers"]);
+                    return $serializerInteface->serialize($customerList, 'json', $context);
+                }
+            );
         } else {
-            $customerList = $customerRepository->findBy(['user' => $this->getUser()]);
+            $jsonCustomerList = $cache->get(
+                $idCache,
+                function (ItemInterface $item) use ($customerRepository, $page, $limit, $serializerInteface) {
+                    $item->tag("customersCache");
+                    $customerList = $customerRepository->findPaginateByUser($this->getUser(), $page, $limit);
+                    $context = SerializationContext::create()->setGroups(["getCustomers"]);
+                    return $serializerInteface->serialize($customerList, 'json', $context);
+                }
+            );
         }
-
-
-        $context = SerializationContext::create()->setGroups(["getCustomers"]);
-        $jsonCustomerList = $serializerInteface->serialize($customerList, 'json', $context);
-
         return new JsonResponse($jsonCustomerList, Response::HTTP_OK, [], true);
     }
+
+
 
     /**
      * Cette méthode permet de récupérer le détail d'un client
@@ -78,10 +112,6 @@ class CustomerController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
-
-
-
-
     #[Route('/api/customers/{id}', name: 'customer_id', methods: ['GET'])]
     public function getCustomer(Customer $customer, SerializerInterface $serializerInteface, CustomerRepository $customerRepository): JsonResponse
     {
@@ -204,21 +234,6 @@ class CustomerController extends AbstractController
         return new JsonResponse($jsonCustomer, Response::HTTP_CREATED, ["Location" => $location], true);
     }
 
-    /*     #[Route('/api/customers/{id}', name: 'customer_update', methods: ['PUT'])]
-    public function updateCustomer(Customer $currentCustomer, Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, UserRepository $userRepository) : JsonResponse
-    {
-        $updatedCustomer = $serializer->deserialize($request->getContent(), Customer::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $currentCustomer]);
-    
-        $content = $request->toArray();
-        $idUser = $content['idUser'] ?? -1;
-        $updatedCustomer->setUser($userRepository->find($idUser));
-
-        $entityManager->persist($updatedCustomer);
-        $entityManager->flush();
-
-        return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);    
-    
-    } */
 
     /**
      * Cette méthode permet de modifier un client existant.
@@ -268,8 +283,6 @@ class CustomerController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
-
-
     #[Route('/api/customers/{id}', name: "customer_update", methods: ['PUT'])]
     #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour modifier un client')]
     public function updateCustomer(Request $request, SerializerInterface $serializer, Customer $currentCustomer, EntityManagerInterface $entityManager, UserRepository $userRepository, ValidatorInterface $validator, TagAwareCacheInterface $cache): JsonResponse
@@ -288,16 +301,9 @@ class CustomerController extends AbstractController
         if ($errors->count() > 0) {
             return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
         }
-
-
-
         $entityManager->persist($currentCustomer);
         $entityManager->flush();
-        return new JsonResponse(['message' => 'Client modifié'], Response::HTTP_OK);
-
-        // On vide le cache.
         $cache->invalidateTags(["customersCache"]);
-
-        return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
+        return new JsonResponse(['message' => 'Client modifié'], Response::HTTP_OK);
     }
 }

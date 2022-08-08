@@ -55,8 +55,6 @@ class ProductController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
-
-
     #[Route('/api/products', name: 'product', methods: ['GET'])]
     public function getAllProducts(ProductRepository $productRepository, SerializerInterface $serializerInterface, Request $request, TagAwareCacheInterface $cache): JsonResponse
     {
@@ -93,8 +91,6 @@ class ProductController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
-
-
     #[Route('/api/products/{id}', name: 'detailProduct', methods: ['GET'])]
     public function getProduct(Product $product, SerializerInterface $serializerInterface): JsonResponse
 
@@ -123,7 +119,6 @@ class ProductController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
-
     #[Route('/api/products/{id}', name: 'product_delete', methods: ['DELETE'])]
     #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants supprimer un produit')]
     public function deleteProduct(Product $product, EntityManagerInterface $entityManager, TagAwareCacheInterface $cache): JsonResponse
@@ -152,7 +147,6 @@ class ProductController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
-
     #[Route('/api/products', name: 'product_create', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour ajouter un produit')]
     public function createProduct(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator, ValidatorInterface $validator): JsonResponse
